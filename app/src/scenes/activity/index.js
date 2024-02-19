@@ -10,7 +10,7 @@ import SelectMonth from "./../../components/selectMonth";
 
 import { getDaysInMonth } from "./utils";
 
-const Activity = () => {
+const Activity = ({ isFeed = false }) => {
   const [date, setDate] = useState(null);
   const [user, setUser] = useState(null);
   const [project, setProject] = useState("");
@@ -33,20 +33,23 @@ const Activity = () => {
   return (
     // Container
     <div className="w-screen md:w-full">
-      <div className="flex flex-wrap gap-5 p-2 md:!px-8">
-        <SelectProject
-          value={project}
-          onChange={(e) => (e ? setProject(e.name) : setProject(""))}
-          className="w-[180px] bg-[#FFFFFF] text-[#212325] py-[10px] px-[14px] rounded-[10px] border-r-[16px] border-[transparent] cursor-pointer shadow-sm font-normal text-[14px]"
-        />
-        <SelectMonth start={-3} indexDefaultValue={3} value={date} onChange={(e) => setDate(e.target.value)} showArrows />
-      </div>
-      {date && user && <Activities date={new Date(date)} user={user} project={project} />}
+      {!isFeed && (
+        <div className="flex flex-wrap gap-5 p-2 md:!px-8">
+          <SelectProject
+            isFeed={isFeed}
+            value={project}
+            onChange={(e) => (e ? setProject(e.name) : setProject(""))}
+            className="w-[180px] bg-[#FFFFFF] text-[#212325] py-[10px] px-[14px] rounded-[10px] border-r-[16px] border-[transparent] cursor-pointer shadow-sm font-normal text-[14px]"
+          />
+          <SelectMonth start={-3} indexDefaultValue={3} value={date} onChange={(e) => setDate(e.target.value)} showArrows />
+        </div>
+      )}
+      {date && user && <Activities date={new Date(date)} user={user} project={project} isFeed={isFeed} />}
     </div>
   );
 };
 
-const Activities = ({ date, user, project }) => {
+const Activities = ({ date, user, project, isFeed }) => {
   const [activities, setActivities] = useState([]);
   const [open, setOpen] = useState(null);
 
@@ -230,8 +233,8 @@ const Activities = ({ date, user, project }) => {
                 </tbody>
               </table>
             </div>
-            <button className="m-3 w-[82px] h-[48px] py-[12px] px-[22px] bg-[#0560FD] text-[16px] font-medium text-[#fff] rounded-[10px]" onClick={onSave}>
-              Save
+            <button className="m-3 w-[82px] h-[48px] py-[12px] px-[22px] bg-[#0560FD] text-[16px] font-medium text-[#fff] rounded-[10px]" onClick={isFeed ? null : onSave}>
+              {isFeed ? "Activities" : "Save"}
             </button>
           </div>
         )}
